@@ -5,12 +5,12 @@ from blog.models import Post
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+import datetime
 
 
 class PostList(ListView):
     model = Post
-    queryset = Post.objects.filter(
-        published_date__lte=timezone.now()).order_by('published_date')
+    queryset = Post.objects.filter().order_by('published_date')
 
 
 class PostDetail(DetailView):
@@ -23,7 +23,8 @@ class PostCreate(CreateView):
     success_url = reverse_lazy('post_list')
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        form.instance.author = self.request.user
+        form.instance.published_date = datetime.datetime.now()
         return super(PostCreate, self).form_valid(form)
 
 
@@ -39,7 +40,6 @@ class PostDelete(DeleteView):
 
 
 # url('/contacts', MyContactsView.view())
-
 
 
 # class MyContactsView(ClassView):
